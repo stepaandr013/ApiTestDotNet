@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApiTestsDotNet
 {
-    public class ApiTest
+    public class ApiTest : BasePostRequest
     {
         public static readonly string URL = "https://reqres.in";
 
@@ -40,14 +40,32 @@ namespace ApiTestsDotNet
         [Test]
         public async Task UserRegistrationTest()
         {
-            var requesrObjectUser = new UserDataRegistration("eve.holt@reqres.in", "pistol");
+            var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr123");
+            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/register", 200);
+            var responseValue = JsonConvert.DeserializeObject<UserDataRegistrationResponse>(responseMessage);
 
-            HttpClient httpClient = new HttpClient();
-            string url = "/api/register";
+            Assert.IsNotNull(responseValue);
+            Assert.IsTrue((responseValue.token is not null) && (responseValue.id.ToString() is not null));
+        }
 
-            string json = JsonConvert.SerializeObject(requesrObjectUser);
+        [Test]
+        public async Task UserLoginTest()
+        {
+            var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr123");
+            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/login", 200);
+            var responseValue = JsonConvert.DeserializeObject<UserDataLoginResponse>(responseMessage);
+            
+            Assert.IsNotNull(responseValue.token);
+        }
 
-            StringContent content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        [Test]
+        public async Task UserLoginFaultTest()
+        {
+            var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr321");
+            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/login", 400);
+            var responseValue = JsonConvert.DeserializeObject<UserDataLoginResponse>(responseMessage);
+
+            Assert.IsNull(responseValue.token);
         }
 
     }
