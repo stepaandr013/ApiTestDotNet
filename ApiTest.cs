@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApiTestsDotNet
 {
-    public class ApiTest : BasePostRequest
+    public class ApiTest : BaseApi
     {
         public static readonly string URL = "https://reqres.in";
 
@@ -41,7 +41,7 @@ namespace ApiTestsDotNet
         public async Task UserRegistrationTest()
         {
             var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr123");
-            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/register", 200);
+            var responseMessage = await postRequest(requestObjectUser, URL + "/api/register", 200);
             var responseValue = JsonConvert.DeserializeObject<UserDataRegistrationResponse>(responseMessage);
 
             Assert.IsNotNull(responseValue);
@@ -52,7 +52,7 @@ namespace ApiTestsDotNet
         public async Task UserLoginTest()
         {
             var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr123");
-            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/login", 200);
+            var responseMessage = await postRequest(requestObjectUser, URL + "/api/login", 200);
             var responseValue = JsonConvert.DeserializeObject<UserDataLoginResponse>(responseMessage);
             
             Assert.IsNotNull(responseValue.token);
@@ -62,7 +62,7 @@ namespace ApiTestsDotNet
         public async Task UserLoginFaultTest()
         {
             var requestObjectUser = new UserDataRegistration("eve.holt@reqres.in", "stepaandr321");
-            var responseMessage = await TestAsync(requestObjectUser, URL + "/api/login", 400);
+            var responseMessage = await postRequest(requestObjectUser, URL + "/api/login", 400);
             var responseValue = JsonConvert.DeserializeObject<UserDataLoginResponse>(responseMessage);
 
             Assert.IsNull(responseValue.token);

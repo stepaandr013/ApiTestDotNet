@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ApiTestsDotNet
 {
-    public class BasePostRequest
+    public class BaseApi
     {
-        public async Task<string> TestAsync(object value, string url, int statusCode)
+        public async Task<string> postRequest(object value, string url, int statusCode)
         {
             HttpClient httpClient = new HttpClient();
             string json = JsonConvert.SerializeObject(value);
